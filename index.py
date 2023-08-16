@@ -24,7 +24,7 @@ async def handler(request: Request):
         return alice_api.get_response('Подождите минуту', event)
     elif search and r and 'сброс' in search:
         r = False
-
+        await alice_api.delete_all_audios()
         return alice_api.get_response('Какой запрос?', event)
     elif search and r and 'часть' not in search:
         with open('ids.json', 'r') as f:
