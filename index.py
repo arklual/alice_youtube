@@ -5,7 +5,7 @@ import json
 
 app = FastAPI()
 
-@app.post("/")
+@app.post("/skill/")
 def handler(event: dict):
     print(event)
     print('------')
