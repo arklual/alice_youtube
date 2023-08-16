@@ -1,7 +1,6 @@
 import requests
 import y
 import os
-from data import ids
 import json
 
 def get_response(text, event, tts=None):
@@ -46,8 +45,19 @@ def upload_audio(audio):
     print(response.json())
     return [audio, response.json()['sound']['id']]
 
+async def delete_all_audios():
+    headers = {
+        'Authorization': 'OAuth y0_AgAAAAAphf1rAAT7owAAAADqVVMYWnxBx9TyQQKqnt5KftPx6ygyJCM',
+    }
+
+    response = requests.get('https://dialogs.yandex.net/api/v1/skills/46f17381-7ce6-4393-a3cb-d989a6e8d906/sounds', headers=headers).json()
+    for i in response['sounds']:
+        requests.delete(
+            f'https://dialogs.yandex.net/api/v1/skills/46f17381-7ce6-4393-a3cb-d989a6e8d906/sounds/{i["id"]}',
+            headers=headers,
+        )
+
 async def youtube_to_alice(search):
-        global ids
         y.get_playlist(search)
         files = os.listdir('output')
         ids = []
