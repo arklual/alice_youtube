@@ -7,11 +7,12 @@ from fastapi.responses import JSONResponse, Response
 import json
 import asyncio
 from typing import Dict
-
+r = False
 app = FastAPI()
 
 @app.post("/skill/")
 async def handler(request: Request):
+    global r
     event = await request.json()
     print(event)
     print('------')
