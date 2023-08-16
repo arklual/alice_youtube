@@ -44,7 +44,7 @@ def upload_audio(audio):
 
     response = requests.post('https://dialogs.yandex.net/api/v1/skills/46f17381-7ce6-4393-a3cb-d989a6e8d906/sounds', headers=headers, files=files)
     print(response.json())
-    return response.json()['sound']['id']
+    return [audio, response.json()['sound']['id']]
 
 async def youtube_to_alice(search):
         global ids
@@ -54,5 +54,7 @@ async def youtube_to_alice(search):
         for f in files:
             ids.append(upload_audio(f'output/{f}'))
             os.remove(f'output/{f}')
+        ids = list(sorted(ids, key=lambda x: x[0]))
+        to_write = [i[1] for i in ids]
         with open('ids.json', 'w', encoding='utf-8') as file:
-            json.dump(ids, file, ensure_ascii=False)
+            json.dump(to_write, file, ensure_ascii=False)
