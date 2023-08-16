@@ -37,3 +37,4 @@ def get_playlist(search_query):
     # writing mp3 files is a one liner
     for i in range(len(playlist)):
         playlist[i].export(f"output/{i+1}.mp3", format="mp3")
+    os.remove("audio.mp3")

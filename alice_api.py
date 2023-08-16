@@ -1,16 +1,29 @@
 import requests
 import y
 import os
+from data import ids
+import json
 
-def get_response(text, event):
-        return {
-            'version': event['version'],
-            'session': event['session'],
-            'response': {
-                'text': text,
-                'end_session': 'false'
-            },
-        }
+def get_response(text, event, tts=None):
+        if not tts:
+            return {
+                'version': event['version'],
+                'session': event['session'],
+                'response': {
+                    'text': text,
+                    'end_session': 'false'
+                },
+            }
+        else:
+            return {
+                'version': event['version'],
+                'session': event['session'],
+                'response': {
+                    'text': text,
+                    'tts': tts,
+                    'end_session': 'false'
+                },
+            } 
 
 def get_input(event):
     if 'request' in event and \
@@ -30,12 +43,16 @@ def upload_audio(audio):
     }
 
     response = requests.post('https://dialogs.yandex.net/api/v1/skills/46f17381-7ce6-4393-a3cb-d989a6e8d906/sounds', headers=headers, files=files)
-    return response.json['id']
+    print(response.json())
+    return response.json()['sound']['id']
 
-def youtube_to_alice(search):
+async def youtube_to_alice(search):
+        global ids
         y.get_playlist(search)
         files = os.listdir('output')
         ids = []
         for f in files:
             ids.append(upload_audio(f'output/{f}'))
-        return ids
+            os.remove(f'output/{f}')
+        with open('ids.json', 'w', encoding='utf-8') as file:
+            json.dump(ids, file, ensure_ascii=False)
